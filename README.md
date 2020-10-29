@@ -1,4 +1,7 @@
 ### Data science docker template
+
+[![YourActionName Actions Status](https://github.com/nathansutton/docker-ide-template/workflows/Docker/badge.svg)](https://github.com/nathansutton/docker-ide-template/actions)
+
 [Forked](caesarnine/data-science-docker-vscode-template) from Binal's excellent [work](https://binal.pub/2019/04/running-vscode-in-docker/).
 
 #### Changes
@@ -19,9 +22,8 @@
 Clone this down and rename the folder to be your project name.
 - Modify the `environment.yml` file to include all the Python packages you need.
 - Modify the Dockerfile to add all the R packages you need.  
-
 ```
-  Rscript -e "install.packages(c('tidyverse'))"
+Rscript -e "install.packages(c('tidyverse'))"
 ```
 
 __Build the image__
