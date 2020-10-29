@@ -1,48 +1,51 @@
-Example template that spins up a self-contained data science environment within a container, that includes:
+### Data science docker template
+[Forked](caesarnine/data-science-docker-vscode-template) from Binal's excellent [work](https://binal.pub/2019/04/running-vscode-in-docker/).
 
-1. Conda for Python dependencies
-2. VSCode for full featured development
-3. JupyerLab for quick protyping
-
-Blog post goes into more detail - find it here:
-
-https://binal.pub/2019/04/running-vscode-in-docker/
-
-Completely based on [Coder's](https://coder.com/) incredible work. Their GitHub repo here: https://github.com/codercom/code-server
+#### Changes
+- Removes VSCode, adds RStudio  
+- Keeps JupyterLab and Conda package manager for Python
+- Adds the AWS command line interface
 
 #### Why is This Useful?
 
 1. You can develop all your code in a fully specified environment, which makes it much easier to reproduce and deploy models and analysis.
 2. You can (after enabling security) move your IDE to the data. Instead of transferring data back and forth you can develop where your data is stored.
-3. Last - and most important for me - in industries like my own (healthcare), you work with highly regulated data that has to be stored securely, where having multiple copies of data on multiple laptops can pose an unacceptably large risk. 
+3. Last - and most important for me - in industries like my own (healthcare), you work with highly regulated data that has to be stored securely, where having multiple copies of data on multiple laptops can pose an unacceptably large risk.
 
     Running containers like this within a secure environment with access to the data helps us to have an ideal development environment, while ensuring the protected data remains in a secure, single location with no unnecessary duplication.
 
 #### How to Use This All
 
-Clone this down and rename the folder to be your project name. Modify the `environment.yml` file to include all the Python packages you need.
-
-Say you rename the folder to `churn-prediction` - run the following:
+Clone this down and rename the folder to be your project name.
+- Modify the `environment.yml` file to include all the Python packages you need.
+- Modify the Dockerfile to add all the R packages you need.  
 
 ```
-cd churn-prediction
-docker build -t churn-prediction .
-docker run -p 8443:8443 -p 8888:8888 -v $(pwd)/data:/data -v $(pwd)/code:/code --rm -it churn-prediction
+  Rscript -e "install.packages(c('tidyverse'))"
 ```
 
-This will spin up the container - starting up JupyerLab and VSCode. 
+__Build the image__
+```
+docker build -t stack .
+```
 
-VSCode will be running on:
-
-http://localhost:8443
-
+__Start up the integrated development environment__
+This will spin up the container - starting up JupyerLab and Rstudio.
+Rstudio will be running on:
+http://localhost:8787 with a username and password of `rstudio`
 JupyterLab will be running on:
+http://localhost:8888 with a token of `local`
 
-http://localhost:8888 with a token of `local-development`
+```
+./docker-run.sh
+```
 
-#### VSCode Extensions and Configuration
+__Run a given R script inside the container__
+```
+./docker-run.sh Rscript /code/hello-world.R
+```
 
-You can install any extension and modify configuration like you would locally. Any extensions you install and global configuration you update will persist in the `./data` folder so you don't have to redo it every time you restart the container. By default VSCode will start up with the `./code` folder as the workspace, which you can change by modifying the `docker-entrypoint.sh` file.
-
-You can pretty much VSCode as you would locally, doing things like starting up terminals, setting Python formatters/linters, and so on.
-
+__Run a given Python script inside the container__
+```
+./docker-run.sh Rscript /code/hello-world.py
+```
